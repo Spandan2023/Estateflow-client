@@ -13,6 +13,7 @@ import SubmitProperty from "../pages/employee/SubmitProperty";
 import Employees from "../pages/admin/Employees";
 import Profile from "../pages/employee/Profile";
 import EmployeeProperties from "../pages/employee/Properties";
+import Property from "../pages/Property";
 
 function AppRoutes() {
   return (
@@ -20,6 +21,7 @@ function AppRoutes() {
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/properties" element={<Properties />} />
 
       <Route
         path="/admin/dashboard"
@@ -82,23 +84,6 @@ function AppRoutes() {
         element={
           <ProtectedRoute allowedRoles={["employee"]}>
             <EmployeeProperties />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/employee/properties"
-        element={
-          <ProtectedRoute allowedRoles={["employee"]}>
-            <EmployeeProperties />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/employee/properties/submit"
-        element={
-          <ProtectedRoute allowedRoles={["employee"]}>
-            <SubmitProperty />
           </ProtectedRoute>
         }
       />
