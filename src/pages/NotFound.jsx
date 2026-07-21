@@ -19,7 +19,7 @@ const NotFound = () => {
           </h1>
 
           <h2 className="mt-6 text-4xl font-bold text-slate-800">
-            Looks like this property has moved.
+            Looks like things have been moved.
           </h2>
 
           <p className="mt-6 text-lg text-slate-600 leading-8 max-w-xl">
