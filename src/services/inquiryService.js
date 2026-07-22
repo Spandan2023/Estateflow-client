@@ -1,116 +1,90 @@
 import axios from "axios";
 
-const BASE_URL = `${import.meta.env.VITE_API_URL}/inquiries`;
+const API_URL = (
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.DEV ? "http://localhost:7000/api" : "")
+).replace(/\/+$/, "");
 
-// ==============================
-// Create Inquiry (Public)
-// ==============================
+const getBaseUrl = () => {
+  if (!API_URL) {
+    throw new Error(
+      "API URL is missing. Set VITE_API_URL in your Vercel environment variables.",
+    );
+  }
 
+  return `${API_URL}/inquiries`;
+};
+
+const getAuthConfig = () => {
+  const token = localStorage.getItem("token");
+
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+};
+
+// Public - Create Inquiry
 export const createInquiry = async (data) => {
-  const response = await axios.post(BASE_URL, data);
+  const response = await axios.post(getBaseUrl(), data);
   return response.data;
 };
 
-// ==============================
-// Get All Inquiries (Admin)
-// ==============================
-
+// Admin - Get All Inquiries
 export const getAllInquiries = async () => {
-  const token = localStorage.getItem("token");
-
-  const response = await axios.get(BASE_URL, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
+  const response = await axios.get(getBaseUrl(), getAuthConfig());
   return response.data;
 };
 
-// ==============================
-// Get Single Inquiry
-// ==============================
-
+// Admin - Get Single Inquiry
 export const getInquiryById = async (id) => {
-  const token = localStorage.getItem("token");
-
-  const response = await axios.get(`${BASE_URL}/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await axios.get(
+    `${getBaseUrl()}/${id}`,
+    getAuthConfig(),
+  );
 
   return response.data;
 };
 
-// ==============================
-// Assign Inquiry
-// ==============================
-
+// Admin - Assign Inquiry
 export const assignInquiry = async (id, data) => {
-  const token = localStorage.getItem("token");
-
   const response = await axios.patch(
-    `${BASE_URL}/${id}/assign`,
+    `${getBaseUrl()}/${id}/assign`,
     data,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
+    getAuthConfig(),
   );
 
   return response.data;
 };
 
-// ==============================
-// Update Inquiry Status
-// ==============================
-
+// Admin - Update Inquiry Status
 export const updateInquiryStatus = async (id, data) => {
-  const token = localStorage.getItem("token");
-
   const response = await axios.patch(
-    `${BASE_URL}/${id}/status`,
+    `${getBaseUrl()}/${id}/status`,
     data,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
+    getAuthConfig(),
   );
 
   return response.data;
 };
 
-// ==============================
-// Delete Inquiry
-// ==============================
-
+// Admin - Delete Inquiry
 export const deleteInquiry = async (id) => {
-  const token = localStorage.getItem("token");
-
-  const response = await axios.delete(`${BASE_URL}/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await axios.delete(
+    `${getBaseUrl()}/${id}`,
+    getAuthConfig(),
+  );
 
   return response.data;
 };
 
-// ==============================
 // Employee - Get My Assigned Inquiries
-// ==============================
-
 export const getMyInquiries = async () => {
-  const token = localStorage.getItem("token");
-
-  const response = await axios.get(`${BASE_URL}/my`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await axios.get(
+    `${getBaseUrl()}/my`,
+    getAuthConfig(),
+  );
 
   return response.data;
 };
