@@ -82,3 +82,13 @@ export const deleteProperty = async (propertyId) => {
 
   return response.data;
 };
+
+// ==============================
+// Get Single Property
+// ==============================
+
+export const getSingleProperty = async (propertyId) => {
+  const response = await axios.get(`${BASE_URL}/${propertyId}`);
+
+  return response.data;
+};

@@ -5,9 +5,9 @@ import {
   ClipboardList,
   FileText,
   Home,
-  Menu,
   UserRoundCheck,
   Users,
+  MessageSquareMore,
   Send,
   WalletCards,
   X,
@@ -40,6 +40,11 @@ const adminLinks = [
     icon: ClipboardList,
   },
   {
+    label: "Customer Inquiries",
+    path: "/admin/inquiries",
+    icon: MessageSquareMore,
+  },
+  {
     label: "Sales",
     path: "/admin/sales",
     icon: WalletCards,
@@ -63,14 +68,14 @@ const employeeLinks = [
     icon: Building2,
   },
   {
-    label: "My Leads",
-    path: "/employee/leads",
-    icon: ClipboardList,
-  },
-  {
     label: "Submit Property",
     path: "/employee/properties/submit",
     icon: Send,
+  },
+  {
+    label: "My Inquiries",
+    path: "/employee/inquiries",
+    icon: MessageSquareMore,
   },
   {
     label: "My Profile",

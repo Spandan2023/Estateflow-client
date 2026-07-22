@@ -9,6 +9,7 @@ import ProtectedRoute from "./ProtectedRoute";
 
 // Public Pages
 import PublicProperties from "../pages/Properties";
+import PropertyDetails from "../pages/PropertyDetails";
 
 // Admin Pages
 import AdminDashboard from "../pages/admin/Dashboard";
@@ -16,12 +17,14 @@ import AdminProperties from "../pages/admin/Properties";
 import EmployeeRequests from "../pages/admin/EmployeeRequests";
 import CreateProperty from "../pages/admin/CreateProperty";
 import Employees from "../pages/admin/Employees";
+import Inquiries from "../pages/admin/Inquiries";
 
 // Employee Pages
 import EmployeeDashboard from "../pages/employee/Dashboard";
 import EmployeeProperties from "../pages/employee/Properties";
 import SubmitProperty from "../pages/employee/SubmitProperty";
 import Profile from "../pages/employee/Profile";
+import EmployeeInquiries from "../pages/employee/Inquiries";
 
 function AppRoutes() {
   return (
@@ -34,7 +37,7 @@ function AppRoutes() {
 
       {/* Public Property Listing */}
       <Route path="/properties" element={<PublicProperties />} />
-
+      <Route path="/properties/:id" element={<PropertyDetails />} />
       {/* ================= ADMIN ROUTES ================= */}
 
       <Route
@@ -81,6 +84,14 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/admin/inquiries"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <Inquiries />
+          </ProtectedRoute>
+        }
+      />
 
       {/* ================= EMPLOYEE ROUTES ================= */}
 
@@ -101,6 +112,15 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+
+      <Route
+  path="/employee/inquiries"
+  element={
+    <ProtectedRoute allowedRoles={["employee"]}>
+      <EmployeeInquiries />
+    </ProtectedRoute>
+  }
+/>
 
       <Route
         path="/employee/properties/submit"

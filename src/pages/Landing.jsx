@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { createInquiry } from "../services/inquiryService";
 import {
   ArrowLeft,
   ArrowRight,
@@ -53,12 +54,13 @@ function Landing() {
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchFeaturedProperties = async () => {
       try {
         const response = await fetch(
-          "http://localhost:7000/api/properties/featured"
+          "http://localhost:7000/api/properties/featured",
         );
 
         if (!response.ok) {
@@ -81,13 +83,13 @@ function Landing() {
 
   const previousSlide = () => {
     setActiveSlide((previous) =>
-      previous === 0 ? slides.length - 1 : previous - 1
+      previous === 0 ? slides.length - 1 : previous - 1,
     );
   };
 
   const nextSlide = () => {
     setActiveSlide((previous) =>
-      previous === slides.length - 1 ? 0 : previous + 1
+      previous === slides.length - 1 ? 0 : previous + 1,
     );
   };
 
@@ -100,20 +102,39 @@ function Landing() {
     }));
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    if (!formData.name || !formData.phone || !formData.message) {
-      return;
+    try {
+      setLoading(true);
+
+      await createInquiry({
+        customerName: formData.name,
+        phone: formData.phone,
+        message: formData.message,
+        source: "landing",
+      });
+
+      setSubmitted(true);
+
+      setFormData({
+        name: "",
+        phone: "",
+        message: "",
+      });
+
+      setTimeout(() => {
+        setSubmitted(false);
+      }, 5000);
+    } catch (error) {
+      console.error(error);
+      alert(
+        error.response?.data?.message ||
+          "Something went wrong. Please try again.",
+      );
+    } finally {
+      setLoading(false);
     }
-
-    setSubmitted(true);
-
-    setFormData({
-      name: "",
-      phone: "",
-      message: "",
-    });
   };
 
   const formatPrice = (price) => {
@@ -232,7 +253,10 @@ function Landing() {
         </div>
       </section>
 
-      <section id="about" className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-28">
+      <section
+        id="about"
+        className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-28"
+      >
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#10B981]">
@@ -384,7 +408,10 @@ function Landing() {
         </div>
       </section>
 
-      <section id="contact" className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-28">
+      <section
+        id="contact"
+        className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-28"
+      >
         <div className="grid overflow-hidden rounded-2xl border border-slate-200 bg-white lg:grid-cols-2">
           <div className="bg-[#0F172A] p-8 text-white sm:p-12">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#10B981]">
@@ -470,10 +497,12 @@ function Landing() {
 
               <button
                 type="submit"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#10B981] py-3.5 font-semibold text-white transition hover:bg-emerald-600"
+                disabled={loading}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#10B981] py-3.5 font-semibold text-white transition hover:bg-emerald-600 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Send Enquiry
-                <Send size={18} />
+                {loading ? "Submitting..." : "Send Enquiry"}
+
+                {!loading && <Send size={18} />}
               </button>
             </form>
           </div>
