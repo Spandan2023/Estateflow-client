@@ -7,7 +7,11 @@ function PropertyMedia({ property, getMediaUrl = (url) => url }) {
   const images = property?.media?.images || [];
   const video = property?.media?.video;
   const videoUrl =
-    typeof video === "string" ? video : video?.url || "";
+    typeof video === "string"
+      ? `${import.meta.env.VITE_API_URL}/uploads/${video}`
+      : video?.filename
+        ? `${import.meta.env.VITE_API_URL}/uploads/${video.filename}`
+        : "";
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
@@ -17,9 +21,9 @@ function PropertyMedia({ property, getMediaUrl = (url) => url }) {
 
   const selectedImage = images[selectedImageIndex];
   const selectedImageUrl = selectedImage
-    ? getMediaUrl(
-        typeof selectedImage === "string" ? selectedImage : selectedImage.url,
-      )
+    ? typeof selectedImage === "string"
+      ? `${import.meta.env.VITE_API_URL}/uploads/${selectedImage}`
+      : `${import.meta.env.VITE_API_URL}/uploads/${selectedImage.filename}`
     : "";
 
   const showPreviousImage = () => {
@@ -117,9 +121,10 @@ function PropertyMedia({ property, getMediaUrl = (url) => url }) {
           {images.length > 1 && (
             <div className="mt-4 flex gap-3 overflow-x-auto pb-1">
               {images.map((image, index) => {
-                const imageUrl = getMediaUrl(
-                  typeof image === "string" ? image : image?.url,
-                );
+                const imageUrl =
+                  typeof image === "string"
+                    ? `${import.meta.env.VITE_API_URL}/uploads/${image}`
+                    : `${import.meta.env.VITE_API_URL}/uploads/${image.filename}`;
 
                 return (
                   <button

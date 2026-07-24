@@ -15,13 +15,20 @@ const PropertyCard = ({ property }) => {
     return new Intl.NumberFormat("en-IN").format(price);
   };
 
+  const image = property.media?.images?.[0]?.filename
+    ? `${import.meta.env.VITE_API_URL}/uploads/${property.media.images[0].filename}`
+    : "/placeholder-property.jpg";
+
   return (
     <div className="group bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
       {/* Image */}
       <div className="relative overflow-hidden h-64">
         <img
-          src={property.media?.images?.[0]?.url || "/placeholder-property.jpg"}
+          src={image}
           alt={property.title}
+          onError={(e) => {
+            e.currentTarget.src = "/placeholder-property.jpg";
+          }}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />
 
@@ -92,13 +99,11 @@ const PropertyCard = ({ property }) => {
         {/* Footer */}
 
         <div className="flex items-center justify-between">
-          <span className="text-xs text-slate-500 capitalize">
             {property.status && (
               <span className="text-xs text-slate-500 capitalize">
                 {property.status}
               </span>
             )}
-          </span>
 
           <Link
             to={`/properties/${property._id}`}
