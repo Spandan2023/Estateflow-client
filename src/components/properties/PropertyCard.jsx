@@ -20,10 +20,7 @@ const PropertyCard = ({ property }) => {
       {/* Image */}
       <div className="relative overflow-hidden h-64">
         <img
-          src={
-            property.media?.images?.[0]?.url ||
-            "/placeholder-property.jpg"
-          }
+          src={property.media?.images?.[0]?.url || "/placeholder-property.jpg"}
           alt={property.title}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />
@@ -43,10 +40,7 @@ const PropertyCard = ({ property }) => {
 
         {/* Wishlist (UI Only) */}
         <button className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 hover:bg-white flex items-center justify-center transition">
-          <Heart
-            size={18}
-            className="text-slate-600 hover:text-red-500"
-          />
+          <Heart size={18} className="text-slate-600 hover:text-red-500" />
         </button>
       </div>
 
@@ -78,7 +72,7 @@ const PropertyCard = ({ property }) => {
             <BedDouble size={18} />
 
             <span className="text-sm">
-              {property.bhk || "N/A"} BHK
+              {property.bhk ? `${property.bhk} BHK` : "Not specified"}
             </span>
           </div>
 
@@ -86,7 +80,7 @@ const PropertyCard = ({ property }) => {
             <Square size={18} />
 
             <span className="text-sm">
-              {property.area || "--"} sq.ft
+              {property.area ? `${property.area} sq.ft` : "Not specified"}
             </span>
           </div>
         </div>
@@ -99,7 +93,11 @@ const PropertyCard = ({ property }) => {
 
         <div className="flex items-center justify-between">
           <span className="text-xs text-slate-500 capitalize">
-            {property.status || "Available"}
+            {property.status && (
+              <span className="text-xs text-slate-500 capitalize">
+                {property.status}
+              </span>
+            )}
           </span>
 
           <Link

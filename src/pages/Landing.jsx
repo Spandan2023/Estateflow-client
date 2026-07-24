@@ -11,6 +11,7 @@ import {
   Phone,
   Send,
 } from "lucide-react";
+import { getPublicProperties } from "../services/propertyService";
 
 const slides = [
   {
@@ -27,7 +28,7 @@ const slides = [
     description:
       "EstateFlow connects you with quality real estate options and professional assistance at every stage.",
     buttonText: "View Our Listings",
-    buttonLink: "#properties",
+    buttonLink: "/properties",
     image:
       "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1800&q=85",
   },
@@ -58,25 +59,23 @@ function Landing() {
 
   useEffect(() => {
     const fetchFeaturedProperties = async () => {
-      try {
-        const response = await fetch(
-          "http://localhost:7000/api/properties/featured",
-        );
+  try {
+    const response = await getPublicProperties();
 
-        if (!response.ok) {
-          throw new Error("Unable to fetch properties");
-        }
+    const properties = response.properties || [];
 
-        const data = await response.json();
+    const randomProperties = [...properties].sort(
+      () => Math.random() - 0.5
+    );
 
-        setProperties(Array.isArray(data) ? data : data.properties || []);
-      } catch (error) {
-        // Property API is created later. Keep this section empty until then.
-        setProperties([]);
-      } finally {
-        setLoadingProperties(false);
-      }
-    };
+    setProperties(randomProperties.slice(0, 3));
+  } catch (error) {
+    console.error(error);
+    setProperties([]);
+  } finally {
+    setLoadingProperties(false);
+  }
+};
 
     fetchFeaturedProperties();
   }, []);
@@ -164,7 +163,7 @@ function Landing() {
               About Us
             </a>
 
-            <a href="#properties" className="transition hover:text-white">
+            <a href="/properties" className="transition hover:text-white">
               Properties
             </a>
 
