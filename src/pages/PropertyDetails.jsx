@@ -155,6 +155,7 @@ function PropertyDetails() {
   const displayPrice =
     property.priceRange ||
     (property.price ? `₹ ${property.price}` : "Price on request");
+    console.log("PROPERTY DATA:", property);
 
   return (
     <div className="min-h-screen bg-[#F8F5F0]">
@@ -337,6 +338,7 @@ function PropertyDetails() {
           property={property}
           getMediaUrl={getMediaUrl}
         />
+        
 
         <PropertyLocation property={property} />
 

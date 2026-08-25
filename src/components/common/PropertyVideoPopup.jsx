@@ -7,8 +7,7 @@ import {
   X,
 } from "lucide-react";
 
-const VIDEO_ID = "https://youtu.be/XIBxysTurIs?si=2PzT-0REoNJ-BU90";
-
+const VIDEO_ID = "XIBxysTurIs";
 function PropertyVideoPopup() {
   const [showVideo, setShowVideo] = useState(true);
   const [videoPlaying, setVideoPlaying] = useState(true);
