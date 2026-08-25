@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { CheckCircle2, Send } from "lucide-react";
+
+import {
+  CheckCircle2,
+  Send,
+} from "lucide-react";
+
 import { createInquiry } from "../../services/inquiryService";
 
 function PropertyInquiry({ property }) {
@@ -10,9 +15,14 @@ function PropertyInquiry({ property }) {
     message: "",
   });
 
-  const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState("");
+  const [loading, setLoading] =
+    useState(false);
+
+  const [submitted, setSubmitted] =
+    useState(false);
+
+  const [error, setError] =
+    useState("");
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -32,11 +42,20 @@ function PropertyInquiry({ property }) {
       setSubmitted(false);
 
       await createInquiry({
-        customerName: formData.customerName.trim(),
-        phone: formData.phone.trim(),
-        email: formData.email.trim(),
-        message: formData.message.trim(),
+        customerName:
+          formData.customerName.trim(),
+
+        phone:
+          formData.phone.trim(),
+
+        email:
+          formData.email.trim(),
+
+        message:
+          formData.message.trim(),
+
         source: "property",
+
         property: property._id,
       });
 
@@ -51,7 +70,7 @@ function PropertyInquiry({ property }) {
     } catch (err) {
       setError(
         err?.response?.data?.message ||
-          "Unable to send your inquiry. Please try again.",
+          "Unable to send your inquiry. Please try again."
       );
     } finally {
       setLoading(false);
@@ -61,32 +80,37 @@ function PropertyInquiry({ property }) {
   return (
     <section
       id="property-inquiry"
-      className="mt-8 scroll-mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8"
+      className="mt-8 scroll-mt-6 rounded-2xl border border-[#E5D5BC]/40 bg-white p-6 shadow-sm sm:p-8"
     >
       <div className="mb-7">
-        <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[#10B981]">
+        <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[#C4943E]">
           Enquire
         </p>
 
-        <h2 className="mt-2 text-2xl font-semibold text-[#0F172A]">
+        <h2 className="mt-2 text-2xl font-semibold text-[#1A1A1A]">
           Interested in this property?
         </h2>
 
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-500">
-          Send your details and an EstateFlow representative will contact you
-          about {property.title}.
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-[#2C2416]/60">
+          Send us your details and a Sukhneer
+          representative will contact you about{" "}
+          {property.title}.
         </p>
       </div>
 
       {submitted && (
         <div
-          className="mb-6 flex items-start gap-3 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800"
+          className="mb-6 flex items-start gap-3 rounded-lg border border-[#E5D5BC] bg-[#FFFCF7] p-4 text-sm text-[#2C2416]"
           role="status"
         >
-          <CheckCircle2 size={20} className="mt-0.5 shrink-0 text-[#10B981]" />
+          <CheckCircle2
+            size={20}
+            className="mt-0.5 shrink-0 text-[#C4943E]"
+          />
+
           <span>
-            Your inquiry has been sent successfully. Our team will contact you
-            shortly.
+            Your inquiry has been sent successfully.
+            Our team will contact you shortly.
           </span>
         </div>
       )}
@@ -100,11 +124,14 @@ function PropertyInquiry({ property }) {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="grid gap-5 md:grid-cols-2">
+      <form
+        onSubmit={handleSubmit}
+        className="grid gap-5 md:grid-cols-2"
+      >
         <div>
           <label
             htmlFor="customerName"
-            className="mb-2 block text-sm font-medium text-[#1E293B]"
+            className="mb-2 block text-sm font-medium text-[#2C2416]"
           >
             Full Name *
           </label>
@@ -117,14 +144,14 @@ function PropertyInquiry({ property }) {
             onChange={handleChange}
             placeholder="Enter your full name"
             required
-            className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-[#10B981] focus:ring-2 focus:ring-emerald-100"
+            className="w-full rounded-lg border border-[#E5D5BC] bg-[#FFFCF7] px-4 py-3 text-[#1A1A1A] outline-none transition placeholder:text-[#2C2416]/40 focus:border-[#C4943E] focus:ring-2 focus:ring-[#E5D5BC]/60"
           />
         </div>
 
         <div>
           <label
             htmlFor="phone"
-            className="mb-2 block text-sm font-medium text-[#1E293B]"
+            className="mb-2 block text-sm font-medium text-[#2C2416]"
           >
             Contact Number *
           </label>
@@ -137,16 +164,20 @@ function PropertyInquiry({ property }) {
             onChange={handleChange}
             placeholder="Enter your contact number"
             required
-            className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-[#10B981] focus:ring-2 focus:ring-emerald-100"
+            className="w-full rounded-lg border border-[#E5D5BC] bg-[#FFFCF7] px-4 py-3 text-[#1A1A1A] outline-none transition placeholder:text-[#2C2416]/40 focus:border-[#C4943E] focus:ring-2 focus:ring-[#E5D5BC]/60"
           />
         </div>
 
         <div className="md:col-span-2">
           <label
             htmlFor="email"
-            className="mb-2 block text-sm font-medium text-[#1E293B]"
+            className="mb-2 block text-sm font-medium text-[#2C2416]"
           >
-            Email Address <span className="text-slate-400">(optional)</span>
+            Email Address{" "}
+
+            <span className="text-[#2C2416]/40">
+              (optional)
+            </span>
           </label>
 
           <input
@@ -156,14 +187,14 @@ function PropertyInquiry({ property }) {
             value={formData.email}
             onChange={handleChange}
             placeholder="you@example.com"
-            className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-[#10B981] focus:ring-2 focus:ring-emerald-100"
+            className="w-full rounded-lg border border-[#E5D5BC] bg-[#FFFCF7] px-4 py-3 text-[#1A1A1A] outline-none transition placeholder:text-[#2C2416]/40 focus:border-[#C4943E] focus:ring-2 focus:ring-[#E5D5BC]/60"
           />
         </div>
 
         <div className="md:col-span-2">
           <label
             htmlFor="message"
-            className="mb-2 block text-sm font-medium text-[#1E293B]"
+            className="mb-2 block text-sm font-medium text-[#2C2416]"
           >
             Message *
           </label>
@@ -176,7 +207,7 @@ function PropertyInquiry({ property }) {
             onChange={handleChange}
             placeholder="Tell us what you would like to know about this property..."
             required
-            className="w-full resize-y rounded-lg border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-[#10B981] focus:ring-2 focus:ring-emerald-100"
+            className="w-full resize-y rounded-lg border border-[#E5D5BC] bg-[#FFFCF7] px-4 py-3 text-[#1A1A1A] outline-none transition placeholder:text-[#2C2416]/40 focus:border-[#C4943E] focus:ring-2 focus:ring-[#E5D5BC]/60"
           />
         </div>
 
@@ -184,14 +215,18 @@ function PropertyInquiry({ property }) {
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#10B981] px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-emerald-600 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#C4943E] px-5 py-3.5 text-sm font-semibold text-[#1A1A1A] transition hover:bg-[#B78532] disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {loading ? "Sending Inquiry..." : "Send Inquiry"}
+            {loading
+              ? "Sending Inquiry..."
+              : "Send Inquiry"}
+
             {!loading && <Send size={17} />}
           </button>
 
-          <p className="mt-3 text-center text-xs text-slate-400">
-            Your details are shared only with EstateFlow for this inquiry.
+          <p className="mt-3 text-center text-xs text-[#2C2416]/45">
+            Your details are shared only with Sukhneer
+            for this inquiry.
           </p>
         </div>
       </form>
