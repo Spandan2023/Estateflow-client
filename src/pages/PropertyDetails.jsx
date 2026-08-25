@@ -39,20 +39,34 @@ const getMediaUrl = (media) => {
 
   if (!url) return FALLBACK_IMAGE;
 
+  const apiUrl =
+    import.meta.env.VITE_API_URL ||
+    "http://localhost:7000/api";
+
+  const apiOrigin = apiUrl.replace(/\/api\/?$/, "");
+
+  // External URLs and base64/data URLs
   if (
-    url.startsWith("http://") ||
     url.startsWith("https://") ||
     url.startsWith("data:")
   ) {
     return url;
   }
 
-  const apiUrl =
-    import.meta.env.VITE_API_URL || "http://localhost:7000/api";
+  // Replace old localhost URLs stored in MongoDB
+  if (url.startsWith("http://localhost:7000")) {
+    const pathname = url.replace(
+      "http://localhost:7000",
+      ""
+    );
 
-  const apiOrigin = apiUrl.replace(/\/api\/?$/, "");
+    return `${apiOrigin}${pathname}`;
+  }
 
-  return `${apiOrigin}${url.startsWith("/") ? "" : "/"}${url}`;
+  // Relative paths
+  return `${apiOrigin}${
+    url.startsWith("/") ? "" : "/"
+  }${url}`;
 };
 
 function PropertyDetails() {
@@ -155,7 +169,7 @@ function PropertyDetails() {
   const displayPrice =
     property.priceRange ||
     (property.price ? `₹ ${property.price}` : "Price on request");
-    console.log("PROPERTY DATA:", property);
+    console.log("PROPERTY DATA:", property);  
 
   return (
     <div className="min-h-screen bg-[#F8F5F0]">

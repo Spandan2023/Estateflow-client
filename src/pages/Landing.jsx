@@ -19,7 +19,6 @@ import { FaFacebookF, FaYoutube } from "react-icons/fa";
 import { getPublicProperties } from "../services/propertyService";
 import Footer from "../components/navigation/Footer";
 
-
 import sukhneerLogo from "../assets/logo/Sukhneer-logo.png";
 
 const slides = [
@@ -51,6 +50,42 @@ const slides = [
       "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1800&q=85",
   },
 ];
+
+const getPropertyImage = (property) => {
+  const images = property.media?.images || [];
+
+  if (!images.length) {
+    return "/placeholder-property.jpg";
+  }
+
+  const firstImage = images[0];
+
+  if (typeof firstImage === "string") {
+    if (firstImage.startsWith("http://") || firstImage.startsWith("https://")) {
+      return firstImage;
+    }
+
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:7000/api";
+
+    const apiOrigin = apiUrl.replace(/\/api\/?$/, "");
+
+    return `${apiOrigin}/uploads/${firstImage}`;
+  }
+
+  if (firstImage?.url) {
+    return firstImage.url;
+  }
+
+  if (firstImage?.filename) {
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:7000/api";
+
+    const apiOrigin = apiUrl.replace(/\/api\/?$/, "");
+
+    return `${apiOrigin}/uploads/${firstImage.filename}`;
+  }
+
+  return "/placeholder-property.jpg";
+};
 
 function Landing() {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -160,325 +195,324 @@ function Landing() {
 
   return (
     <>
-    <main className="min-h-screen bg-[#F9F8F6] text-[#1A1A1A]">
-      {/* ================= NAVBAR ================= */}
+      <main className="min-h-screen bg-[#F9F8F6] text-[#1A1A1A]">
+        {/* ================= NAVBAR ================= */}
 
-      <header className="absolute left-0 right-0 top-0 z-30 border-b border-white/10">
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-8">
-          <Link to="/" className="flex items-center">
-            <img
-              src={sukhneerLogo}
-              alt="Sukhneer"
-              className="h-11 w-auto object-contain"
-            />
-          </Link>
+        <header className="absolute left-0 right-0 top-0 z-30 border-b border-white/10">
+          <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-8">
+            <Link to="/" className="flex items-center">
+              <img
+                src={sukhneerLogo}
+                alt="Sukhneer"
+                className="h-11 w-auto object-contain"
+              />
+            </Link>
 
-          <nav className="hidden items-center gap-7 text-sm font-medium text-[#F9F8F6]/90 md:flex">
-            <a href="/properties" className="transition hover:text-[#C4943E]">
-              Properties
-            </a>
+            <nav className="hidden items-center gap-7 text-sm font-medium text-[#F9F8F6]/90 md:flex">
+              <a href="/properties" className="transition hover:text-[#C4943E]">
+                Properties
+              </a>
 
-            <a href="#contact" className="transition hover:text-[#C4943E]">
-              Contact
-            </a>
-          </nav>
+              <a href="#contact" className="transition hover:text-[#C4943E]">
+                Contact
+              </a>
+            </nav>
 
-          <Link
-            to="/login"
-            className="rounded-lg border border-[#C4943E] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#C4943E] hover:text-[#1A1A1A]"
-          >
-            Employee Login
-          </Link>
-        </div>
-      </header>
+            <Link
+              to="/login"
+              className="rounded-lg border border-[#C4943E] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#C4943E] hover:text-[#1A1A1A]"
+            >
+              Employee Login
+            </Link>
+          </div>
+        </header>
 
-      {/* ================= HERO ================= */}
+        {/* ================= HERO ================= */}
 
-      <section className="relative min-h-[680px] overflow-hidden bg-[#2C2416]">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: `
+        <section className="relative min-h-[680px] overflow-hidden bg-[#2C2416]">
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{
+              backgroundImage: `
               linear-gradient(
                 rgba(26, 26, 26, 0.62),
                 rgba(44, 36, 22, 0.88)
               ),
               url('${currentSlide.image}')
             `,
-          }}
-        />
+            }}
+          />
 
-        <div className="relative mx-auto flex min-h-[680px] max-w-7xl items-center px-5 pt-20 sm:px-8">
-          <div className="max-w-2xl">
-            <p className="mb-5 text-sm font-semibold uppercase tracking-[0.25em] text-[#C4943E]">
-              Sukhneer Real Estate
-            </p>
+          <div className="relative mx-auto flex min-h-[680px] max-w-7xl items-center px-5 pt-20 sm:px-8">
+            <div className="max-w-2xl">
+              <p className="mb-5 text-sm font-semibold uppercase tracking-[0.25em] text-[#C4943E]">
+                Sukhneer Real Estate
+              </p>
 
-            <h1 className="text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
-              {currentSlide.title}
-            </h1>
+              <h1 className="text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
+                {currentSlide.title}
+              </h1>
 
-            <p className="mt-6 max-w-xl text-base leading-7 text-[#E5D5BC] sm:text-lg">
-              {currentSlide.description}
-            </p>
+              <p className="mt-6 max-w-xl text-base leading-7 text-[#E5D5BC] sm:text-lg">
+                {currentSlide.description}
+              </p>
 
-            <a
-              href={currentSlide.buttonLink}
-              className="mt-8 inline-flex items-center gap-2 rounded-lg bg-[#C4943E] px-6 py-3.5 text-sm font-semibold text-[#1A1A1A] transition hover:bg-[#E5D5BC]"
-            >
-              {currentSlide.buttonText}
+              <a
+                href={currentSlide.buttonLink}
+                className="mt-8 inline-flex items-center gap-2 rounded-lg bg-[#C4943E] px-6 py-3.5 text-sm font-semibold text-[#1A1A1A] transition hover:bg-[#E5D5BC]"
+              >
+                {currentSlide.buttonText}
 
-              <ChevronRight size={18} />
-            </a>
+                <ChevronRight size={18} />
+              </a>
+            </div>
           </div>
-        </div>
 
-        {/* Hero Controls */}
+          {/* Hero Controls */}
 
-        <div className="absolute bottom-10 left-0 right-0 z-10 mx-auto flex max-w-7xl items-center justify-between px-5 sm:px-8">
-          <div className="flex gap-2">
-            {slides.map((slide, index) => (
+          <div className="absolute bottom-10 left-0 right-0 z-10 mx-auto flex max-w-7xl items-center justify-between px-5 sm:px-8">
+            <div className="flex gap-2">
+              {slides.map((slide, index) => (
+                <button
+                  key={slide.title}
+                  type="button"
+                  aria-label={`Show slide ${index + 1}`}
+                  onClick={() => setActiveSlide(index)}
+                  className={`h-2 rounded-full transition ${
+                    activeSlide === index
+                      ? "w-8 bg-[#C4943E]"
+                      : "w-2 bg-white/40 hover:bg-white"
+                  }`}
+                />
+              ))}
+            </div>
+
+            <div className="flex gap-3">
               <button
-                key={slide.title}
                 type="button"
-                aria-label={`Show slide ${index + 1}`}
-                onClick={() => setActiveSlide(index)}
-                className={`h-2 rounded-full transition ${
-                  activeSlide === index
-                    ? "w-8 bg-[#C4943E]"
-                    : "w-2 bg-white/40 hover:bg-white"
-                }`}
-              />
-            ))}
-          </div>
+                onClick={previousSlide}
+                aria-label="Previous slide"
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/30 text-white transition hover:bg-[#C4943E] hover:text-[#1A1A1A]"
+              >
+                <ArrowLeft size={18} />
+              </button>
 
-          <div className="flex gap-3">
-            <button
-              type="button"
-              onClick={previousSlide}
-              aria-label="Previous slide"
-              className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/30 text-white transition hover:bg-[#C4943E] hover:text-[#1A1A1A]"
-            >
-              <ArrowLeft size={18} />
-            </button>
-
-            <button
-              type="button"
-              onClick={nextSlide}
-              aria-label="Next slide"
-              className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/30 text-white transition hover:bg-[#C4943E] hover:text-[#1A1A1A]"
-            >
-              <ArrowRight size={18} />
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= FEATURED PROPERTIES ================= */}
-
-      <section
-        id="properties"
-        className="border-y border-[#E5D5BC] bg-[#F9F8F6]"
-      >
-        <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-24">
-          <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#C4943E]">
-                Featured Properties
-              </p>
-
-              <h2 className="mt-3 text-3xl font-semibold text-[#1A1A1A]">
-                Discover your next property
-              </h2>
-
-              <p className="mt-3 text-[#5C554B]">
-                Explore selected residential and commercial opportunities.
-              </p>
+              <button
+                type="button"
+                onClick={nextSlide}
+                aria-label="Next slide"
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/30 text-white transition hover:bg-[#C4943E] hover:text-[#1A1A1A]"
+              >
+                <ArrowRight size={18} />
+              </button>
             </div>
-
-            <Link
-              to="/properties"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-[#C4943E] transition hover:text-[#2C2416]"
-            >
-              View all properties
-              <ChevronRight size={18} />
-            </Link>
           </div>
+        </section>
 
-          {!loadingProperties && properties.length > 0 && (
-            <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {properties.slice(0, 3).map((property) => {
-                const propertyImage = Array.isArray(property.images)
-                  ? property.images[0]
-                  : property.images;
+        {/* ================= FEATURED PROPERTIES ================= */}
 
-                return (
-                  <article
-                    key={property._id}
-                    className="overflow-hidden rounded-xl border border-[#E5D5BC] bg-white transition duration-300 hover:-translate-y-1 hover:shadow-xl"
-                  >
-                    {propertyImage ? (
-                      <img
-                        src={propertyImage}
-                        alt={property.title}
-                        className="h-56 w-full object-cover"
-                      />
-                    ) : (
-                      <div className="h-56 bg-[#E5D5BC]" />
-                    )}
-
-                    <div className="p-5">
-                      <p className="text-sm font-semibold text-[#C4943E]">
-                        {property.category}
-                      </p>
-
-                      <h3 className="mt-2 text-xl font-semibold text-[#1A1A1A]">
-                        {property.title}
-                      </h3>
-
-                      <p className="mt-3 flex items-center gap-2 text-sm text-[#6B6258]">
-                        <MapPin size={16} className="text-[#C4943E]" />
-
-                        {property.city}
-                      </p>
-
-                      <div className="mt-5 flex items-center justify-between border-t border-[#E5D5BC] pt-4">
-                        <span className="font-semibold text-[#1A1A1A]">
-                          {formatPrice(property.price)}
-                        </span>
-
-                        <Link
-                          to={`/properties/${property._id}`}
-                          className="text-sm font-semibold text-[#C4943E] transition hover:text-[#2C2416]"
-                        >
-                          View Details
-                        </Link>
-                      </div>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* ================= CONTACT ================= */}
-
-      <section
-        id="contact"
-        className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-28"
-      >
-        <div className="grid overflow-hidden rounded-2xl border border-[#E5D5BC] bg-white shadow-sm lg:grid-cols-2">
-          {/* Left */}
-
-          <div className="bg-[#2C2416] p-8 text-white sm:p-12">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#C4943E]">
-              Get In Touch
-            </p>
-
-            <h2 className="mt-4 text-3xl font-semibold leading-tight">
-              Let us help you find the right property.
-            </h2>
-
-            <p className="mt-5 max-w-md leading-7 text-[#E5D5BC]">
-              Share your requirements with us and our team will get in touch
-              with relevant property options and further details.
-            </p>
-
-            <div className="mt-10 flex items-center gap-4">
-              <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#C4943E] text-[#1A1A1A]">
-                <Phone size={20} />
-              </span>
-
+        <section
+          id="properties"
+          className="border-y border-[#E5D5BC] bg-[#F9F8F6]"
+        >
+          <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-24">
+            <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
               <div>
-                <p className="text-sm text-[#E5D5BC]">Call our team</p>
+                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#C4943E]">
+                  Featured Properties
+                </p>
 
-                {/* Replace with actual Sukhneer number */}
+                <h2 className="mt-3 text-3xl font-semibold text-[#1A1A1A]">
+                  Discover your next property
+                </h2>
 
-                <p className="mt-1 font-semibold">Contact Sukhneer</p>
+                <p className="mt-3 text-[#5C554B]">
+                  Explore selected residential and commercial opportunities.
+                </p>
               </div>
+
+              <Link
+                to="/properties"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-[#C4943E] transition hover:text-[#2C2416]"
+              >
+                View all properties
+                <ChevronRight size={18} />
+              </Link>
             </div>
-          </div>
 
-          {/* Form */}
+            {!loadingProperties && properties.length > 0 && (
+              <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {properties.slice(0, 3).map((property) => {
+                  const propertyImage = getPropertyImage(property);
 
-          <div className="p-8 sm:p-12">
-            {submitted && (
-              <div className="mb-6 rounded-lg border border-[#C4943E]/40 bg-[#F9F3E8] px-4 py-3 text-sm text-[#4A7C59]">
-                Thank you. Your enquiry has been received successfully.
+                  return (
+                    <article
+                      key={property._id}
+                      className="overflow-hidden rounded-xl border border-[#E5D5BC] bg-white transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+                    >
+                      {propertyImage ? (
+                        <img
+                          src={propertyImage}
+                          alt={property.title}
+                          onError={(event) => {
+                            event.currentTarget.src =
+                              "/placeholder-property.jpg";
+                          }}
+                          className="h-56 w-full object-cover"
+                        />
+                      ) : (
+                        <div className="h-56 bg-[#E5D5BC]" />
+                      )}
+
+                      <div className="p-5">
+                        <p className="text-sm font-semibold text-[#C4943E]">
+                          {property.category}
+                        </p>
+
+                        <h3 className="mt-2 text-xl font-semibold text-[#1A1A1A]">
+                          {property.title}
+                        </h3>
+
+                        <p className="mt-3 flex items-center gap-2 text-sm text-[#6B6258]">
+                          <MapPin size={16} className="text-[#C4943E]" />
+
+                          {property.city}
+                        </p>
+
+                        <div className="mt-5 flex items-center justify-between border-t border-[#E5D5BC] pt-4">
+                          <span className="font-semibold text-[#1A1A1A]">
+                            {formatPrice(property.price)}
+                          </span>
+
+                          <Link
+                            to={`/properties/${property._id}`}
+                            className="text-sm font-semibold text-[#C4943E] transition hover:text-[#2C2416]"
+                          >
+                            View Details
+                          </Link>
+                        </div>
+                      </div>
+                    </article>
+                  );
+                })}
               </div>
             )}
-
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div>
-                <label className="mb-2 block text-sm font-medium text-[#1A1A1A]">
-                  Full Name
-                </label>
-
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="Enter your name"
-                  required
-                  className="w-full rounded-xl border border-[#E5D5BC] px-4 py-3 outline-none transition focus:border-[#C4943E] focus:ring-2 focus:ring-[#E5D5BC]"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium text-[#1A1A1A]">
-                  Contact Number
-                </label>
-
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  placeholder="Enter your phone number"
-                  required
-                  className="w-full rounded-xl border border-[#E5D5BC] px-4 py-3 outline-none transition focus:border-[#C4943E] focus:ring-2 focus:ring-[#E5D5BC]"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium text-[#1A1A1A]">
-                  Your Enquiry
-                </label>
-
-                <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  rows="4"
-                  placeholder="Tell us what type of property you are looking for..."
-                  required
-                  className="w-full resize-none rounded-xl border border-[#E5D5BC] px-4 py-3 outline-none transition focus:border-[#C4943E] focus:ring-2 focus:ring-[#E5D5BC]"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#C4943E] py-3.5 font-semibold text-[#1A1A1A] transition hover:bg-[#2C2416] hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {loading ? "Submitting..." : "Send Enquiry"}
-
-                {!loading && <Send size={18} />}
-              </button>
-            </form>
           </div>
-        </div>
-      </section>
+        </section>
 
+        {/* ================= CONTACT ================= */}
 
-    </main>
-    <PropertyVideoPopup />
-    <Footer />
+        <section
+          id="contact"
+          className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-28"
+        >
+          <div className="grid overflow-hidden rounded-2xl border border-[#E5D5BC] bg-white shadow-sm lg:grid-cols-2">
+            {/* Left */}
+
+            <div className="bg-[#2C2416] p-8 text-white sm:p-12">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#C4943E]">
+                Get In Touch
+              </p>
+
+              <h2 className="mt-4 text-3xl font-semibold leading-tight">
+                Let us help you find the right property.
+              </h2>
+
+              <p className="mt-5 max-w-md leading-7 text-[#E5D5BC]">
+                Share your requirements with us and our team will get in touch
+                with relevant property options and further details.
+              </p>
+
+              <div className="mt-10 flex items-center gap-4">
+                <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#C4943E] text-[#1A1A1A]">
+                  <Phone size={20} />
+                </span>
+
+                <div>
+                  <p className="text-sm text-[#E5D5BC]">Call our team</p>
+
+                  {/* Replace with actual Sukhneer number */}
+
+                  <p className="mt-1 font-semibold">Contact Sukhneer</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Form */}
+
+            <div className="p-8 sm:p-12">
+              {submitted && (
+                <div className="mb-6 rounded-lg border border-[#C4943E]/40 bg-[#F9F3E8] px-4 py-3 text-sm text-[#4A7C59]">
+                  Thank you. Your enquiry has been received successfully.
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-[#1A1A1A]">
+                    Full Name
+                  </label>
+
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Enter your name"
+                    required
+                    className="w-full rounded-xl border border-[#E5D5BC] px-4 py-3 outline-none transition focus:border-[#C4943E] focus:ring-2 focus:ring-[#E5D5BC]"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-[#1A1A1A]">
+                    Contact Number
+                  </label>
+
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="Enter your phone number"
+                    required
+                    className="w-full rounded-xl border border-[#E5D5BC] px-4 py-3 outline-none transition focus:border-[#C4943E] focus:ring-2 focus:ring-[#E5D5BC]"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-[#1A1A1A]">
+                    Your Enquiry
+                  </label>
+
+                  <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    rows="4"
+                    placeholder="Tell us what type of property you are looking for..."
+                    required
+                    className="w-full resize-none rounded-xl border border-[#E5D5BC] px-4 py-3 outline-none transition focus:border-[#C4943E] focus:ring-2 focus:ring-[#E5D5BC]"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#C4943E] py-3.5 font-semibold text-[#1A1A1A] transition hover:bg-[#2C2416] hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {loading ? "Submitting..." : "Send Enquiry"}
+
+                  {!loading && <Send size={18} />}
+                </button>
+              </form>
+            </div>
+          </div>
+        </section>
+      </main>
+      <PropertyVideoPopup />
+      <Footer />
     </>
-
   );
 }
 
