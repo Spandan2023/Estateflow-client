@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { createInquiry } from "../services/inquiryService";
 import PropertyVideoPopup from "../components/common/PropertyVideoPopup";
 import {
   ArrowLeft,
@@ -8,14 +7,7 @@ import {
   ChevronRight,
   MapPin,
   Phone,
-  Send,
-  Volume2,
-  VolumeX,
-  X,
-  Pause,
-  Play,
 } from "lucide-react";
-import { FaFacebookF, FaYoutube } from "react-icons/fa";
 import { getPublicProperties } from "../services/propertyService";
 import Footer from "../components/navigation/Footer";
 
@@ -60,24 +52,32 @@ const getPropertyImage = (property) => {
 
   const firstImage = images[0];
 
+  // If image is already a full URL
   if (typeof firstImage === "string") {
-    if (firstImage.startsWith("http://") || firstImage.startsWith("https://")) {
+    if (
+      firstImage.startsWith("http://") ||
+      firstImage.startsWith("https://")
+    ) {
       return firstImage;
     }
 
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:7000/api";
+    const apiUrl =
+      import.meta.env.VITE_API_URL || "http://localhost:7000/api";
 
     const apiOrigin = apiUrl.replace(/\/api\/?$/, "");
 
     return `${apiOrigin}/uploads/${firstImage}`;
   }
 
+  // If image is an object with a URL
   if (firstImage?.url) {
     return firstImage.url;
   }
 
+  // If image is an object with filename
   if (firstImage?.filename) {
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:7000/api";
+    const apiUrl =
+      import.meta.env.VITE_API_URL || "http://localhost:7000/api";
 
     const apiOrigin = apiUrl.replace(/\/api\/?$/, "");
 
@@ -92,19 +92,6 @@ function Landing() {
   const [properties, setProperties] = useState([]);
   const [loadingProperties, setLoadingProperties] = useState(true);
 
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    message: "",
-  });
-
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const [showVideo, setShowVideo] = useState(true);
-  const [videoMuted, setVideoMuted] = useState(true);
-  const [videoPlaying, setVideoPlaying] = useState(true);
-
   useEffect(() => {
     const fetchFeaturedProperties = async () => {
       try {
@@ -118,7 +105,7 @@ function Landing() {
 
         setProperties(randomProperties.slice(0, 3));
       } catch (error) {
-        console.error(error);
+        console.error("Failed to fetch featured properties:", error);
         setProperties([]);
       } finally {
         setLoadingProperties(false);
@@ -140,51 +127,6 @@ function Landing() {
     );
   };
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-
-    setFormData((previous) => ({
-      ...previous,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    try {
-      setLoading(true);
-
-      await createInquiry({
-        customerName: formData.name,
-        phone: formData.phone,
-        message: formData.message,
-        source: "landing",
-      });
-
-      setSubmitted(true);
-
-      setFormData({
-        name: "",
-        phone: "",
-        message: "",
-      });
-
-      setTimeout(() => {
-        setSubmitted(false);
-      }, 5000);
-    } catch (error) {
-      console.error(error);
-
-      alert(
-        error.response?.data?.message ||
-          "Something went wrong. Please try again.",
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const formatPrice = (price) => {
     if (!price) return "Price on request";
 
@@ -196,6 +138,7 @@ function Landing() {
   return (
     <>
       <main className="min-h-screen bg-[#F9F8F6] text-[#1A1A1A]">
+
         {/* ================= NAVBAR ================= */}
 
         <header className="absolute left-0 right-0 top-0 z-30 border-b border-white/10">
@@ -208,22 +151,21 @@ function Landing() {
               />
             </Link>
 
-            <nav className="hidden items-center gap-7 text-sm font-medium text-[#F9F8F6]/90 md:flex">
-              <a href="/properties" className="transition hover:text-[#C4943E]">
+            <nav className="flex items-center gap-7 text-sm font-medium text-[#F9F8F6]/90">
+              <a
+                href="/properties"
+                className="transition hover:text-[#C4943E]"
+              >
                 Properties
               </a>
 
-              <a href="#contact" className="transition hover:text-[#C4943E]">
+              <a
+                href="#contact"
+                className="transition hover:text-[#C4943E]"
+              >
                 Contact
               </a>
             </nav>
-
-            <Link
-              to="/login"
-              className="rounded-lg border border-[#C4943E] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#C4943E] hover:text-[#1A1A1A]"
-            >
-              Employee Login
-            </Link>
           </div>
         </header>
 
@@ -234,12 +176,12 @@ function Landing() {
             className="absolute inset-0 bg-cover bg-center"
             style={{
               backgroundImage: `
-              linear-gradient(
-                rgba(26, 26, 26, 0.62),
-                rgba(44, 36, 22, 0.88)
-              ),
-              url('${currentSlide.image}')
-            `,
+                linear-gradient(
+                  rgba(26, 26, 26, 0.62),
+                  rgba(44, 36, 22, 0.88)
+                ),
+                url('${currentSlide.image}')
+              `,
             }}
           />
 
@@ -257,14 +199,23 @@ function Landing() {
                 {currentSlide.description}
               </p>
 
-              <a
-                href={currentSlide.buttonLink}
-                className="mt-8 inline-flex items-center gap-2 rounded-lg bg-[#C4943E] px-6 py-3.5 text-sm font-semibold text-[#1A1A1A] transition hover:bg-[#E5D5BC]"
-              >
-                {currentSlide.buttonText}
-
-                <ChevronRight size={18} />
-              </a>
+              {currentSlide.buttonLink.startsWith("/") ? (
+                <Link
+                  to={currentSlide.buttonLink}
+                  className="mt-8 inline-flex items-center gap-2 rounded-lg bg-[#C4943E] px-6 py-3.5 text-sm font-semibold text-[#1A1A1A] transition hover:bg-[#E5D5BC]"
+                >
+                  {currentSlide.buttonText}
+                  <ChevronRight size={18} />
+                </Link>
+              ) : (
+                <a
+                  href={currentSlide.buttonLink}
+                  className="mt-8 inline-flex items-center gap-2 rounded-lg bg-[#C4943E] px-6 py-3.5 text-sm font-semibold text-[#1A1A1A] transition hover:bg-[#E5D5BC]"
+                >
+                  {currentSlide.buttonText}
+                  <ChevronRight size={18} />
+                </a>
+              )}
             </div>
           </div>
 
@@ -316,6 +267,7 @@ function Landing() {
           className="border-y border-[#E5D5BC] bg-[#F9F8F6]"
         >
           <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-24">
+
             <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#C4943E]">
@@ -342,7 +294,7 @@ function Landing() {
 
             {!loadingProperties && properties.length > 0 && (
               <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {properties.slice(0, 3).map((property) => {
+                {properties.map((property) => {
                   const propertyImage = getPropertyImage(property);
 
                   return (
@@ -350,19 +302,16 @@ function Landing() {
                       key={property._id}
                       className="overflow-hidden rounded-xl border border-[#E5D5BC] bg-white transition duration-300 hover:-translate-y-1 hover:shadow-xl"
                     >
-                      {propertyImage ? (
-                        <img
-                          src={propertyImage}
-                          alt={property.title}
-                          onError={(event) => {
-                            event.currentTarget.src =
-                              "/placeholder-property.jpg";
-                          }}
-                          className="h-56 w-full object-cover"
-                        />
-                      ) : (
-                        <div className="h-56 bg-[#E5D5BC]" />
-                      )}
+                      <img
+                        src={propertyImage}
+                        alt={property.title}
+                        onError={(event) => {
+                          event.currentTarget.onerror = null;
+                          event.currentTarget.src =
+                            "/placeholder-property.jpg";
+                        }}
+                        className="h-56 w-full object-cover"
+                      />
 
                       <div className="p-5">
                         <p className="text-sm font-semibold text-[#C4943E]">
@@ -374,9 +323,12 @@ function Landing() {
                         </h3>
 
                         <p className="mt-3 flex items-center gap-2 text-sm text-[#6B6258]">
-                          <MapPin size={16} className="text-[#C4943E]" />
+                          <MapPin
+                            size={16}
+                            className="text-[#C4943E]"
+                          />
 
-                          {property.city}
+                          {property.city || "Location available on request"}
                         </p>
 
                         <div className="mt-5 flex items-center justify-between border-t border-[#E5D5BC] pt-4">
@@ -397,6 +349,14 @@ function Landing() {
                 })}
               </div>
             )}
+
+            {!loadingProperties && properties.length === 0 && (
+              <div className="mt-10 rounded-xl border border-[#E5D5BC] bg-white p-10 text-center">
+                <p className="text-[#5C554B]">
+                  No featured properties are available at the moment.
+                </p>
+              </div>
+            )}
           </div>
         </section>
 
@@ -406,111 +366,89 @@ function Landing() {
           id="contact"
           className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-28"
         >
-          <div className="grid overflow-hidden rounded-2xl border border-[#E5D5BC] bg-white shadow-sm lg:grid-cols-2">
-            {/* Left */}
+          <div className="overflow-hidden rounded-2xl border border-[#E5D5BC] bg-white shadow-sm">
+            <div className="grid lg:grid-cols-2">
 
-            <div className="bg-[#2C2416] p-8 text-white sm:p-12">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#C4943E]">
-                Get In Touch
-              </p>
+              {/* Left */}
 
-              <h2 className="mt-4 text-3xl font-semibold leading-tight">
-                Let us help you find the right property.
-              </h2>
+              <div className="bg-[#2C2416] p-8 text-white sm:p-12">
+                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#C4943E]">
+                  Get In Touch
+                </p>
 
-              <p className="mt-5 max-w-md leading-7 text-[#E5D5BC]">
-                Share your requirements with us and our team will get in touch
-                with relevant property options and further details.
-              </p>
+                <h2 className="mt-4 text-3xl font-semibold leading-tight">
+                  Let us help you find the right property.
+                </h2>
 
-              <div className="mt-10 flex items-center gap-4">
-                <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#C4943E] text-[#1A1A1A]">
-                  <Phone size={20} />
-                </span>
+                <p className="mt-5 max-w-md leading-7 text-[#E5D5BC]">
+                  Contact the Sukhneer team directly for property information,
+                  availability, pricing, and further assistance.
+                </p>
 
-                <div>
-                  <p className="text-sm text-[#E5D5BC]">Call our team</p>
+                <div className="mt-10 flex items-center gap-4">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#C4943E] text-[#1A1A1A]">
+                    <Phone size={20} />
+                  </span>
 
-                  {/* Replace with actual Sukhneer number */}
+                  <div>
+                    <p className="text-sm text-[#E5D5BC]">
+                      Call our team
+                    </p>
 
-                  <p className="mt-1 font-semibold">Contact Sukhneer</p>
+                    {/* Replace with actual Sukhneer contact number */}
+
+                    <p className="mt-1 font-semibold">
+                      Contact Sukhneer
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Form */}
+              {/* Right - Contact Information */}
 
-            <div className="p-8 sm:p-12">
-              {submitted && (
-                <div className="mb-6 rounded-lg border border-[#C4943E]/40 bg-[#F9F3E8] px-4 py-3 text-sm text-[#4A7C59]">
-                  Thank you. Your enquiry has been received successfully.
+              <div className="flex flex-col justify-center p-8 sm:p-12">
+                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#C4943E]">
+                  Contact Information
+                </p>
+
+                <h3 className="mt-4 text-2xl font-semibold text-[#1A1A1A]">
+                  Speak directly with our team
+                </h3>
+
+                <p className="mt-4 leading-7 text-[#5C554B]">
+                  For enquiries regarding available properties, site visits,
+                  pricing, or other property-related information, please contact
+                  Sukhneer directly.
+                </p>
+
+                <div className="mt-8 rounded-xl border border-[#E5D5BC] bg-[#F9F8F6] p-6">
+                  <div className="flex items-start gap-4">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#C4943E] text-[#1A1A1A]">
+                      <Phone size={20} />
+                    </span>
+
+                    <div>
+                      <p className="text-sm text-[#6B6258]">
+                        Contact Sukhneer
+                      </p>
+
+                      {/* Replace with actual Sukhneer contact details */}
+
+                      <p className="mt-2 text-lg font-semibold text-[#1A1A1A]">
+                        Contact details coming soon
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              )}
+              </div>
 
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-[#1A1A1A]">
-                    Full Name
-                  </label>
-
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="Enter your name"
-                    required
-                    className="w-full rounded-xl border border-[#E5D5BC] px-4 py-3 outline-none transition focus:border-[#C4943E] focus:ring-2 focus:ring-[#E5D5BC]"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-[#1A1A1A]">
-                    Contact Number
-                  </label>
-
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    placeholder="Enter your phone number"
-                    required
-                    className="w-full rounded-xl border border-[#E5D5BC] px-4 py-3 outline-none transition focus:border-[#C4943E] focus:ring-2 focus:ring-[#E5D5BC]"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-[#1A1A1A]">
-                    Your Enquiry
-                  </label>
-
-                  <textarea
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    rows="4"
-                    placeholder="Tell us what type of property you are looking for..."
-                    required
-                    className="w-full resize-none rounded-xl border border-[#E5D5BC] px-4 py-3 outline-none transition focus:border-[#C4943E] focus:ring-2 focus:ring-[#E5D5BC]"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#C4943E] py-3.5 font-semibold text-[#1A1A1A] transition hover:bg-[#2C2416] hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {loading ? "Submitting..." : "Send Enquiry"}
-
-                  {!loading && <Send size={18} />}
-                </button>
-              </form>
             </div>
           </div>
         </section>
       </main>
+
       <PropertyVideoPopup />
+
       <Footer />
     </>
   );

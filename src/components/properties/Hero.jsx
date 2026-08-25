@@ -37,8 +37,7 @@ const Hero = () => {
           </Link>
 
           {/* Navigation */}
-          <nav className="hidden items-center gap-8 text-sm font-medium md:flex">
-
+          <nav className="flex items-center gap-8 text-sm font-medium">
             <Link
               to="/"
               className="text-[#E5D5BC] transition hover:text-[#C4943E]"
@@ -61,16 +60,7 @@ const Hero = () => {
             >
               Contact
             </a>
-
           </nav>
-
-          {/* Employee Login */}
-          <Link
-            to="/login"
-            className="rounded-lg border border-[#E5D5BC]/60 px-4 py-2 text-sm font-semibold text-white transition hover:border-[#C4943E] hover:bg-[#C4943E] hover:text-[#1A1A1A]"
-          >
-            Employee Login
-          </Link>
 
         </div>
       </header>
@@ -78,7 +68,6 @@ const Hero = () => {
       {/* ================= HERO CONTENT ================= */}
 
       <div className="relative z-10 flex h-full items-center justify-center px-6 text-center text-white">
-
         <div className="max-w-4xl">
 
           <span className="inline-block rounded-full border border-[#C4943E]/70 bg-[#C4943E]/15 px-4 py-2 text-sm font-medium text-[#E5D5BC]">
@@ -87,7 +76,9 @@ const Hero = () => {
 
           <h1 className="mt-8 text-5xl font-extrabold leading-tight md:text-6xl">
             Find a Property
-            <span className="text-[#C4943E]"> That Feels Like Home</span>
+            <span className="text-[#C4943E]">
+              {" "}That Feels Like Home
+            </span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-[#E5D5BC] md:text-xl">
@@ -115,9 +106,7 @@ const Hero = () => {
             </a>
 
           </div>
-
         </div>
-
       </div>
     </section>
   );
