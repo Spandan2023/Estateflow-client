@@ -14,7 +14,7 @@ import PropertyVideoPopup from "../../components/common/PropertyVideoPopup";
 import { loginUser } from "../../services/authService";
 import { useAuth } from "../../context/AuthContext";
 
-import sukhneerLogo from "../../assets/logo/sukhneer-logo.png";
+import sukhneerLogo from "../../assets/logo/Sukhneer-logo.png";
 
 function Login() {
   const navigate = useNavigate();
