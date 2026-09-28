@@ -11,18 +11,18 @@ function AppRoutes() {
       {/* ================= PUBLIC WEBSITE ================= */}
 
       {/* Landing Page */}
-      <Route path="/" element={<Landing />} />
+      <Route path="/" element={<NotFound />} />
 
       {/* Property Listing */}
       <Route
         path="/properties"
-        element={<PublicProperties />}
+        element={<NotFound />}
       />
 
       {/* Individual Property Details */}
       <Route
         path="/properties/:id"
-        element={<PropertyDetails />}
+        element={<NotFound />}
       />
 
       {/* ================= 404 ================= */}
